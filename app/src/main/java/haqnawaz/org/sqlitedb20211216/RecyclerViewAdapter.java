@@ -12,11 +12,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class myRecyclerViewAdapter extends RecyclerView.Adapter<myRecyclerViewAdapter.MyViewHolder> {
+public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder> {
     public AdapterListener onClickListener;
     ArrayList<StudentModel> Students;
 
-    public myRecyclerViewAdapter(ArrayList<StudentModel> students) {
+    public RecyclerViewAdapter(ArrayList<StudentModel> students) {
         this.Students = students;
     }
 

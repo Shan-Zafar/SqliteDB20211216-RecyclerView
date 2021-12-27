@@ -6,12 +6,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -19,7 +19,6 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     Button buttonAdd, buttonViewAll, btnDelAll;
@@ -55,13 +54,10 @@ public class MainActivity extends AppCompatActivity {
                             editName = ((AlertDialog) dialog).findViewById(R.id.nameEt);
                             editAge = ((AlertDialog) dialog).findViewById(R.id.ageEt);
                             switchIsActive = ((AlertDialog) dialog).findViewById(R.id.switchStudent);
-                            if( TextUtils.isEmpty(editName.getText()) || TextUtils.isEmpty(editAge.getText()))
-                            {
+                            if (TextUtils.isEmpty(editName.getText()) || TextUtils.isEmpty(editAge.getText())) {
                                 Toast.makeText(MainActivity.this, "Fill all the details", Toast.LENGTH_SHORT).show();
-                            }
-                            else{
-                                try
-                                {
+                            } else {
+                                try {
                                     studentModel = new StudentModel(editName.getText().toString(), Integer.parseInt(editAge.getText().toString()), switchIsActive.isChecked());
                                     DbHelper dbHelper = new DbHelper(MainActivity.this);
                                     dbHelper.addStudent(studentModel);
@@ -69,10 +65,10 @@ public class MainActivity extends AppCompatActivity {
                                     Handler handler = new Handler();
                                     handler.postDelayed(() -> ViewStudents(), 1000);
 
-                                }
-                                catch (Exception e){
+                                } catch (Exception e) {
                                     Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG).show();
-                                }}
+                                }
+                            }
                         })
                         .setNegativeButton("Cancel", (dialog, id) -> dialog.cancel());
                 AlertDialog alertDialog = builder.create();
@@ -83,8 +79,7 @@ public class MainActivity extends AppCompatActivity {
         buttonViewAll.setOnClickListener(v -> ViewStudents());
 
         btnDelAll.setOnClickListener(view -> {
-            if(layoutManager.getItemCount()>0)
-            {
+            if (layoutManager.getItemCount() > 0) {
                 DbHelper dbHelper = new DbHelper(MainActivity.this);
                 list = dbHelper.getAllStudents();
 
@@ -103,13 +98,12 @@ public class MainActivity extends AppCompatActivity {
                 AlertDialog alertDialog = builder.create();
                 alertDialog.show();
                 dbHelper.close();
-            }
-            else
-            {
+            } else {
                 Toast.makeText(MainActivity.this, "There are not any students", Toast.LENGTH_SHORT).show();
             }
 
         });
+    }
         public void ViewStudents()
         {
             DbHelper dbHelper = new DbHelper(MainActivity.this);
@@ -182,4 +176,4 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-}
+
