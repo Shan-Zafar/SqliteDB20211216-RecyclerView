@@ -110,6 +110,76 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
+        public void ViewStudents()
+        {
+            DbHelper dbHelper = new DbHelper(MainActivity.this);
+            list = dbHelper.getAllStudents();
+            if (list.size()==0)
+            {
+                Toast.makeText(MainActivity.this, "No Student Found", Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                RecyclerViewAdapter adapter = new RecyclerViewAdapter(list);
+                adapter.setOnItemClickListener((position, id) -> {
+                    if(id==findViewById(R.id.updatebtn).getId())
+                    {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                        View myDialog = MainActivity.this.getLayoutInflater().inflate( R.layout.studentinfo,  new LinearLayout(MainActivity.this), false);
+
+                        editAge = myDialog.findViewById(R.id.ageEt);
+                        editName = myDialog.findViewById(R.id.nameEt);
+                        switchIsActive = myDialog.findViewById(R.id.switchStudent);
+
+                        editName.setText(list.get(position).getName());
+                        editAge.setText(String.valueOf(list.get(position).getAge()));
+                        switchIsActive.setChecked(list.get(position).isActive());
+                        builder.setTitle("Update Student");
+
+                        builder.setView(myDialog);
+                        builder.setPositiveButton("Update student", (dialog, asdf) -> {
+                            if( TextUtils.isEmpty(editName.getText()) || TextUtils.isEmpty(editAge.getText()))
+                            {
+                                Toast.makeText(MainActivity.this, "Fill all the details", Toast.LENGTH_SHORT).show();
+                            }
+                            else{
+                                try
+                                {
+                                    dbHelper.updateStudent(list.get(position).getId(), editName.getText().toString(), Integer.parseInt(editAge.getText().toString()), switchIsActive.isChecked());
+                                    adapter.updateStudent(position, editName.getText().toString(), Integer.parseInt(editAge.getText().toString()), switchIsActive.isChecked());
+                                    Toast.makeText(MainActivity.this, "Student Updated Successfully", Toast.LENGTH_SHORT).show();
+
+                                }
+                                catch (Exception e){
+                                    Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG).show();
+                                }}
+                        });
+                        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.show();
+                    }
+
+                    else if (id==findViewById(R.id.delbtn).getId())
+                    {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                        builder.setMessage("Student will be permanent deleted");
+                        builder.setTitle("Delete Student");
+                        builder.setCancelable(false);
+                        builder.setPositiveButton("Delete", (dialog, asdf) -> {
+                            dbHelper.deleteStudent(list.get(position).getId());
+                            adapter.deleteRecord(position);
+                            Toast.makeText(MainActivity.this, "Student Deleted Successfully", Toast.LENGTH_SHORT).show();
+                        });
+                        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.show();
+                    }
+
+                });
+                recyclerView.setAdapter(adapter);
+            }
+
+        }
 
     }
 }
